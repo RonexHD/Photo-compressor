@@ -40,17 +40,22 @@
             android:layout_height="match_parent"
 
             android:layout_margin="16dp"
-            android:textSize="60dp"
+            android:textSize="60sp"
             android:text="Image Compressor" />
     </androidx.cardview.widget.CardView>
 
 
-    <!--    <com.google.android.material.button.MaterialButton-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="100dp"-->
-<!--        android:layout_marginleft="50dp"-->
-<!--        android:layout_gravity="center">-->
-
-<!--    </com.google.android.material.button.MaterialButton>-->
+    <Button
+        android:id="@+id/homeButton"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/ic_baseline_arrow_forward_24"
+        android:textColor="@android:color/black"
+        android:text="select image"
+        app:iconTint="@android:color/black"
+        app:iconGravity="end"
+        app:backgroundTint="@android:color/white"
+        android:layout_gravity="center"
+        />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
