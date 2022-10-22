@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".compress_activity">
+    tools:context=".CompressActivity">
 
 
     <RelativeLayout
@@ -24,6 +24,12 @@
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="155dp"
             tools:layout_editor_absoluteY="136dp" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button" />
     </RelativeLayout>
 
 </RelativeLayout>

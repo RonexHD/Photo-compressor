@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PhotoCompressor">
         <activity
-            android:name=".compress_activity"
+            android:name=".CompressActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
