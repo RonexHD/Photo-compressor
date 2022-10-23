@@ -1,35 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bgGrey"
+
+    android:orientation="vertical"
     tools:context=".CompressActivity">
 
 
-    <RelativeLayout
+    <LinearLayout
 
         android:layout_width="match_parent"
         android:layout_height="300dp"
+
+        android:background="@drawable/bg"
         android:layout_marginStart="25dp"
         android:layout_marginLeft="25dp"
         android:layout_marginTop="25dp"
         android:layout_marginEnd="25dp"
         android:layout_marginRight="25dp"
+        android:orientation="vertical"
         android:layout_marginBottom="25dp">
+
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             tools:layout_editor_absoluteX="155dp"
             tools:layout_editor_absoluteY="136dp" />
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Button" />
-    </RelativeLayout>
+    </LinearLayout>
 
-</RelativeLayout>
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="25dp"
+        android:orientation="vertical"
+        android:gravity="center"
+
+
+        >
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="250dp"
+            android:background="@drawable/btn_shape"
+            android:layout_height="60dp"
+            android:layout_marginBottom="25dp"
+            android:textColor="@android:color/black"
+            app:backgroundTint="@android:color/white"
+            android:layout_weight="1"
+            android:text="Select Image" />
+
+        <Button
+            android:id="@+id/button3"
+            android:background="@drawable/btn_shape"
+            android:textColor="@android:color/black"
+            app:backgroundTint="@android:color/white"
+            android:layout_width="250dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="25dp"
+            android:layout_weight="1"
+            android:text="compress" />
+    </LinearLayout>
+
+
+
+</LinearLayout>

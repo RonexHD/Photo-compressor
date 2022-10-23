@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="@color/bgGrey"
+
     android:layout_height="match_parent"
 
     tools:context=".MainActivity">
@@ -47,17 +48,17 @@
 
     <Button
         android:id="@+id/select_image_btn"
-        android:layout_width="wrap_content"
-        android:layout_marginTop="100dp"
-        android:layout_height="wrap_content"
-        app:icon="@drawable/ic_baseline_arrow_forward_24"
-        android:textColor="@android:color/black"
-        android:text="select image"
-        app:iconTint="@android:color/black"
-        app:iconGravity="end"
-        app:backgroundTint="@android:color/white"
+        android:background="@drawable/btn_shape"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
         android:layout_gravity="center"
-        >
+        android:layout_marginTop="100dp"
+        android:text="Start"
+        android:textColor="@android:color/black"
+        app:backgroundTint="@android:color/white"
+        app:icon="@drawable/ic_baseline_arrow_forward_24"
+        app:iconGravity="end"
+        app:iconTint="@android:color/black">
 
     </Button>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
