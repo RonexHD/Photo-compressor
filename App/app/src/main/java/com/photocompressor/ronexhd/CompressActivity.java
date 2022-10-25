@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -13,7 +14,6 @@ import android.provider.MediaStore;
 import android.text.format.Formatter;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -26,8 +26,6 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.List;
@@ -88,7 +86,7 @@ public class CompressActivity extends AppCompatActivity {
         btnSelect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openGallery();
+                selectImage();
             }
         });
 
@@ -96,9 +94,12 @@ public class CompressActivity extends AppCompatActivity {
 
     }
 
-    private void openGallery(){
+    private void selectImage(){
         Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-        startActivityForResult(gallery, RESULT_IMAGE );
+        if (getIntent().resolveActivity(getPackageManager())!= null) {
+            startActivityForResult(gallery, RESULT_IMAGE );
+        }
+
     }
 
     @Override
@@ -112,25 +113,44 @@ public class CompressActivity extends AppCompatActivity {
             seekBar.setVisibility(View.VISIBLE);
             originalSize.setVisibility(View.VISIBLE);
 
-            final Uri imageUri = data.getData();
-            try {
+            if (data != null){
+                Uri selectImageUri = data.getData();
+                if (selectImageUri != null ){
+                    try {
 
-                InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                originalImg.setImageBitmap(selectedImage);
-                originalImage = new File(imageUri.getPath());
-                originalSize.setText(MessageFormat.format("Size: {0}", Formatter.formatShortFileSize(this, originalImage.length())));
+                        InputStream inputStream = getContentResolver().openInputStream(selectImageUri);
+                        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                        originalImg.setImageBitmap(bitmap);
+                        originalImage = new File(selectImageUri.getPath().replace("raw/", ""));
+                        File selectedImageFile = new File(getPathFromUri(selectImageUri));
+                        originalSize.setText(MessageFormat.format("Size: {0}", Formatter.formatShortFileSize(this, selectedImageFile.length())));
 
 
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
+                    }catch (Exception exception){
+                        Toast.makeText(this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
 
         }else {
             Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    private String getPathFromUri(Uri contentUri){
+        String filepath;
+        Cursor cursor = getContentResolver().query(contentUri, null, null, null, null);
+        if (cursor == null){
+            filepath = contentUri.getPath();
+
+        }else {
+            cursor.moveToFirst();
+            int index =cursor.getColumnIndex("_data");
+            filepath =cursor.getString(index);
+            cursor.close();
+        }
+        return filepath;
     }
 
     private void askPermission() {
