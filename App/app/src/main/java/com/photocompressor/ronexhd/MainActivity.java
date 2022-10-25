@@ -32,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
         this.setTitle(" ");
 
 
+
+
         button = findViewById(R.id.select_image_btn);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
