@@ -1,5 +1,7 @@
 package com.photocompressor.ronexhd;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,6 +22,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.imagecompressor.ImageCompressUtils;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -26,9 +30,14 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Random;
+
+import id.zelory.compressor.Compressor;
 
 public class CompressActivity extends AppCompatActivity {
 
@@ -37,10 +46,11 @@ public class CompressActivity extends AppCompatActivity {
     TextView originalSize, compressedSize, qualityText;
     SeekBar seekBar;
     Button btnSelect, btnCompress;
-    File originalImage;
+    File originalImage, compressedImage;
+
     private static String filePath;
-    File path= new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "myCompressed");
-    private Object Manifest;
+    File path = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/myCompressed");
+
 
 
 
@@ -57,7 +67,7 @@ public class CompressActivity extends AppCompatActivity {
         btnSelect=findViewById(R.id.select_btn);
         btnCompress=findViewById(R.id.compress_btn);
 
-        filePath=path.getAbsolutePath();
+        filePath = path.getAbsolutePath();
 
         if(!path.delete()){
             path.mkdirs();
@@ -90,10 +100,64 @@ public class CompressActivity extends AppCompatActivity {
             }
         });
 
+        btnCompress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                int quality = seekBar.getProgress();
+
+
+                try {
+                    compressedImage = new Compressor(CompressActivity.this)
+                            .setMaxWidth(900)
+                            .setMaxHeight(1500)
+                            .setQuality(quality)
+                            .setCompressFormat(Bitmap.CompressFormat.JPEG)
+                            .setDestinationDirectoryPath(filePath)
+                            .compressToFile(new File(originalImage.getAbsolutePath()));
+                    compressedSize.setText( MessageFormat.format("Size after Compress: {0}", Formatter.formatShortFileSize(CompressActivity.this, compressedImage.length())));
+                    Toast.makeText(CompressActivity.this, "Compressed! Check your Gallery.", Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(CompressActivity.this, "Error: " + e.getMessage() , Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
 
 
     }
 
+
+//    public void compress(){
+//        String root = Environment.getExternalStorageDirectory().toString();
+//        File myDir = new File(root + "Image_Compressor");
+//        myDir.mkdirs();
+//        Random generator = new Random();
+//        int n = 1000;
+//        n = generator.nextInt(n);
+//        String fileName = "Compressed_" + n + ".jpg";
+//
+//        File imageFile = new File(myDir, fileName);
+//        Log.i(TAG, "" + imageFile);
+//        if (imageFile.exists())
+//            imageFile.delete();
+//        try {
+//            int quality = seekBar.getProgress();
+//            InputStream inputStream = getContentResolver().openInputStream(selectImageUri);
+//            Bitmap imageBitmap = BitmapFactory.decodeStream(inputStream);
+//            FileOutputStream out = new FileOutputStream(imageFile);
+//            imageBitmap.compress(Bitmap.CompressFormat.JPEG, quality, out );
+//            out.flush();
+//            out.close();
+//
+//        }catch (Exception e ){
+//            e.printStackTrace();
+//        }
+//
+//    }
     private void selectImage(){
         Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         if (getIntent().resolveActivity(getPackageManager())!= null) {
@@ -114,21 +178,23 @@ public class CompressActivity extends AppCompatActivity {
             originalSize.setVisibility(View.VISIBLE);
 
             if (data != null){
-                Uri selectImageUri = data.getData();
+//                final Uri selectImageUri = data.getData();
+                final Uri selectImageUri = data.getData();
                 if (selectImageUri != null ){
                     try {
 
-                        InputStream inputStream = getContentResolver().openInputStream(selectImageUri);
+                        final InputStream inputStream = getContentResolver().openInputStream(selectImageUri);
                         Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                         originalImg.setImageBitmap(bitmap);
-                        originalImage = new File(selectImageUri.getPath().replace("raw/", ""));
-                        File selectedImageFile = new File(getPathFromUri(selectImageUri));
-                        originalSize.setText(MessageFormat.format("Size: {0}", Formatter.formatShortFileSize(this, selectedImageFile.length())));
-
+//                        originalImage = new File(selectImageUri.getPath().replace("raw/", ""));
+                        originalImage = new File(getPathFromUri(selectImageUri));
+                        originalSize.setText(MessageFormat.format(" Original Size: {0}", Formatter.formatShortFileSize(this, originalImage.length())));
 
                     }catch (Exception exception){
                         Toast.makeText(this, exception.getMessage(), Toast.LENGTH_SHORT).show();
                     }
+
+
                 }
             }
 
