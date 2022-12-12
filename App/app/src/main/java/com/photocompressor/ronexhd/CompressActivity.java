@@ -43,10 +43,10 @@ public class CompressActivity extends AppCompatActivity {
 
     public static final int RESULT_IMAGE = 1;
     ImageView originalImg;
-    TextView originalSize, compressedSize, qualityText;
+    TextView originalSize, compressedSize, qualityText, default_quality;
     SeekBar seekBar;
     Button btnSelect, btnCompress;
-    File originalImage, compressedImage;
+    File originalImage, compressedImage, renameFile;
 
     private static String filePath;
     File path = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/myCompressed");
@@ -61,17 +61,32 @@ public class CompressActivity extends AppCompatActivity {
 
         originalImg=findViewById(R.id.imageView);
         originalSize=findViewById(R.id.original_size_txt);
+        default_quality=findViewById(R.id.default_quality);
         compressedSize=findViewById(R.id.compressed_size_txt);
         qualityText=findViewById(R.id.quality_txt);
         seekBar=findViewById(R.id.seekbar);
         btnSelect=findViewById(R.id.select_btn);
         btnCompress=findViewById(R.id.compress_btn);
 
-        filePath = path.getAbsolutePath();
 
+
+
+        filePath = path.getAbsolutePath();
         if(!path.delete()){
             path.mkdirs();
         }
+
+//        Random generator = new Random();
+//        int n = 1000;
+//        n = generator.nextInt(n);
+//        String fileName = "Compressed-IMG_" + n + ".jpg";
+//
+//        renameFile = new File(filePath, fileName);
+//        Log.i(TAG, "" + renameFile);
+//        if (renameFile.exists())
+//            renameFile.delete();
+
+
 
         askPermission();
 
@@ -105,7 +120,11 @@ public class CompressActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                int quality = seekBar.getProgress();
+               int quality = seekBar.getProgress();
+
+                if (seekBar.getProgress() == 0 ){
+                    quality = 50;
+                }
 
 
                 try {
@@ -116,6 +135,8 @@ public class CompressActivity extends AppCompatActivity {
                             .setCompressFormat(Bitmap.CompressFormat.JPEG)
                             .setDestinationDirectoryPath(filePath)
                             .compressToFile(new File(originalImage.getAbsolutePath()));
+//                            .compressToFile(new File(compressedImage.getAbsolutePath()));
+
                     compressedSize.setText( MessageFormat.format("Size after Compress: {0}", Formatter.formatShortFileSize(CompressActivity.this, compressedImage.length())));
                     Toast.makeText(CompressActivity.this, "Compressed! Check your Gallery.", Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
@@ -146,7 +167,7 @@ public class CompressActivity extends AppCompatActivity {
 //            imageFile.delete();
 //        try {
 //            int quality = seekBar.getProgress();
-//            InputStream inputStream = getContentResolver().openInputStream(selectImageUri);
+//            InputStream inputStream = getContentResolver().openInputStream();
 //            Bitmap imageBitmap = BitmapFactory.decodeStream(inputStream);
 //            FileOutputStream out = new FileOutputStream(imageFile);
 //            imageBitmap.compress(Bitmap.CompressFormat.JPEG, quality, out );
@@ -158,6 +179,9 @@ public class CompressActivity extends AppCompatActivity {
 //        }
 //
 //    }
+
+
+
     private void selectImage(){
         Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         if (getIntent().resolveActivity(getPackageManager())!= null) {
@@ -172,13 +196,13 @@ public class CompressActivity extends AppCompatActivity {
 
         if(resultCode == RESULT_OK){
             btnCompress.setVisibility(View.VISIBLE );
+            default_quality.setVisibility(View.VISIBLE);
             compressedSize.setVisibility(View.VISIBLE);
             qualityText.setVisibility(View.VISIBLE);
             seekBar.setVisibility(View.VISIBLE);
             originalSize.setVisibility(View.VISIBLE);
 
             if (data != null){
-//                final Uri selectImageUri = data.getData();
                 final Uri selectImageUri = data.getData();
                 if (selectImageUri != null ){
                     try {
@@ -186,7 +210,6 @@ public class CompressActivity extends AppCompatActivity {
                         final InputStream inputStream = getContentResolver().openInputStream(selectImageUri);
                         Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                         originalImg.setImageBitmap(bitmap);
-//                        originalImage = new File(selectImageUri.getPath().replace("raw/", ""));
                         originalImage = new File(getPathFromUri(selectImageUri));
                         originalSize.setText(MessageFormat.format(" Original Size: {0}", Formatter.formatShortFileSize(this, originalImage.length())));
 
