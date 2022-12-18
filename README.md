@@ -1,4 +1,4 @@
-# Photo-compressor
+# Photo-compressor V1.0
 
 # Note:
 This app version will only run on android version <= 9
